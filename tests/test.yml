@@ -1,0 +1,36 @@
+---
+
+- name: Test Kong API Gateway
+  hosts: all
+
+  pre_tasks:
+    - name: Update apt
+      become: yes
+      apt:
+        cache_valid_time: 1800
+        update_cache: yes
+      tags:
+        - build
+
+  roles:
+    - role: sansible.postgresql
+      postgresql:
+        root_password: P4ssw0rd!123
+        root_user: root
+        version: 9.5
+        
+    - role: sansible.kong
+      kong:
+        db:
+          root_password: P4ssw0rd!123
+          root_user: root
+
+  tasks:
+    - name: Wait for Kong port
+      wait_for:
+        port: 8000
+        state: started
+        timeout: 10
+
+    - name: Check if Kong responds
+      shell: "curl -v http://localhost:8000/"

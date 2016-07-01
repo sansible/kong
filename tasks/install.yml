@@ -1,0 +1,48 @@
+---
+
+- name: Install kong dependencies
+  become: yes
+  apt:
+    name: "{{ item }}"
+    state: installed
+  with_items: "{{ kong.dependencies }}"
+
+# This seems to fail often, retry a few times
+- name: Download kong
+  become: yes
+  get_url:
+    dest: "/var/tmp/kong-{{ kong.version }}.deb"
+    timeout: 300
+    url: "https://github.com/Mashape/kong/releases/download/{{ kong.version }}/kong-{{ kong.version }}.{{ ansible_distribution_release }}_all.deb"
+    validate_certs: no
+  register: kong_download_data
+  until: kong_download_data | success
+  retries: 5
+  delay: 10
+
+- name: Install kong
+  become: yes
+  apt:
+    deb: "/var/tmp/kong-{{ kong.version }}.deb"
+    state: installed
+
+- name: Ensure log directory owned by nginx user
+  become: yes
+  file:
+    path: /usr/local/kong/logs
+    state: directory
+    owner: www-data
+    group: www-data
+
+- name: Create kong init.d script
+  become: yes
+  template:
+    dest: /etc/init.d/kong
+    mode: 0751
+    src: initd.j2
+
+- name: Ensure kong service is enabled
+  become: yes
+  service:
+    name: kong
+    enabled: yes

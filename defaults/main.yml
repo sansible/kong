@@ -1,0 +1,47 @@
+---
+
+kong:
+  admin_api_listen: "0.0.0.0:8001"
+  db:
+    host: localhost
+    name: kong
+    password: kong
+    port: 5432
+    root_password: ~
+    root_user: ~
+    user: kong
+  dependencies:
+    - dnsmasq
+    - libpcre3
+    - lua5.2
+    - luarocks
+    - netcat
+    - openssl
+    - procps
+    - python-psycopg2
+  logs:
+    # combined or json
+    access_log_format: combined
+  plugins:
+    - acl
+    - basic-auth
+    - cors
+    - file-log
+    - hmac-auth
+    - http-log
+    - ip-restriction
+    - jwt
+    - key-auth
+    - galileo
+    - oauth2
+    - rate-limiting
+    - response-ratelimiting
+    - response-transformer
+    - request-size-limiting
+    - request-transformer
+    - ssl
+    - tcp-log
+    - udp-log
+  proxy_listen: "0.0.0.0:8000"
+  proxy_listen_ssl: "0.0.0.0:8443"
+  version: 0.8.3
