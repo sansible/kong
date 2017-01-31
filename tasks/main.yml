@@ -1,5 +1,14 @@
 ---
 
+- name: Kong version check
+  fail:
+    msg: "Only version >= 0.9 is supported"
+  when:
+    - kong.version | version_compare('0.9', '<')
+  tags:
+    - build
+    - configure
+
 - name: Install Kong
   include: install.yml
   tags:

@@ -18,7 +18,7 @@
         root_password: P4ssw0rd!123
         root_user: root
         version: 9.5
-        
+
     - role: sansible.kong
       kong:
         db:
@@ -31,6 +31,10 @@
         port: 8000
         state: started
         timeout: 10
+      tags:
+        - assert
 
     - name: Check if Kong responds
       shell: "curl -v http://localhost:8000/"
+      tags:
+        - assert

@@ -22,14 +22,25 @@
     state: present
   when: kong.db.root_user and kong.db.root_password and create_db.changed
 
-- name: Write kong config
+- name: Write kong nginx config
   become: yes
   template:
-    dest: /etc/kong/kong.yml
+    dest: /etc/kong/default_nginx.template
     group: root
     mode: 0644
     owner: root
-    src: kong.yml.j2
+    src: default_nginx.template.j2
+  notify:
+    - restart kong
+
+- name: Write kong config
+  become: yes
+  template:
+    dest: /etc/kong/kong.conf
+    group: root
+    mode: 0644
+    owner: root
+    src: kong.conf.j2
   notify:
     - restart kong
 
