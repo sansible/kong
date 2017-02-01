@@ -50,3 +50,7 @@ kong:
     - ssl
     - tcp-log
     - udp-log
+
+  systemd:
+    # if you are using Casandra change to cassandra.service
+    requires: postgresql.service

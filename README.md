@@ -12,6 +12,9 @@ This role installs Kong on Debian systems, configured to use Postgres for storag
 
 For more information on Kong please visit [getkong](https://getkong.org/).
 
+If you want to test locally using Ubuntu Xenial, create `.make` file (if it's not
+already created) and add the line `VAGRANT_BOX=ubuntu/xenial64`.
+
 
 
 
