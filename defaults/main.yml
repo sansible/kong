@@ -2,6 +2,11 @@
 
 kong:
   admin_api_listen: "0.0.0.0:8001"
+  nginx_template: default_nginx.template
+  proxy_listen_ssl: "0.0.0.0:8443"
+  proxy_listen: "0.0.0.0:8000"
+  version: 0.9.*
+
   db:
     host: localhost
     name: kong
@@ -10,6 +15,7 @@ kong:
     root_password: ~
     root_user: ~
     user: kong
+
   dependencies:
     - dnsmasq
     - libpcre3
@@ -19,9 +25,11 @@ kong:
     - openssl
     - procps
     - python-psycopg2
+
   logs:
     # combined or json
     access_log_format: combined
+
   plugins:
     - acl
     - basic-auth
@@ -42,6 +50,3 @@ kong:
     - ssl
     - tcp-log
     - udp-log
-  proxy_listen: "0.0.0.0:8000"
-  proxy_listen_ssl: "0.0.0.0:8443"
-  version: 0.8.3

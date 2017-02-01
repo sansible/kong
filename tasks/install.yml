@@ -1,30 +1,18 @@
 ---
 
-- name: Install kong dependencies
+- name: Add BinTray deb repository
+  become: yes
+  apt_repository:
+    repo: "deb https://dl.bintray.com/mashape/kong-ubuntu-{{ ansible_distribution_release }}-{{ kong.version | regex_replace('(^[0-9]+\\.[0-9]+).*$', '\\1.x') }}
+      {{ ansible_distribution_release }} main"
+    state: present
+
+  # We need to force the install due to lack of GPG signature.
+- name: "Install Kong {{ kong.version }}"
   become: yes
   apt:
-    name: "{{ item }}"
-    state: installed
-  with_items: "{{ kong.dependencies }}"
-
-# This seems to fail often, retry a few times
-- name: Download kong
-  become: yes
-  get_url:
-    dest: "/var/tmp/kong-{{ kong.version }}.deb"
-    timeout: 300
-    url: "https://github.com/Mashape/kong/releases/download/{{ kong.version }}/kong-{{ kong.version }}.{{ ansible_distribution_release }}_all.deb"
-    validate_certs: no
-  register: kong_download_data
-  until: kong_download_data | success
-  retries: 5
-  delay: 10
-
-- name: Install kong
-  become: yes
-  apt:
-    deb: "/var/tmp/kong-{{ kong.version }}.deb"
-    state: installed
+    name: "kong={{ kong.version }}"
+    force: yes
 
 - name: Ensure log directory owned by nginx user
   become: yes
@@ -46,3 +34,4 @@
   service:
     name: kong
     enabled: yes
+    state: stopped

@@ -4,8 +4,8 @@ PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin
 DESC="Kong API Service"
 NAME=kong
 DAEMON=/usr/local/bin/kong
-DAEMON_ARGS=""
-PIDFILE=/usr/local/kong/nginx.pid
+DAEMON_ARGS="--nginx-conf=/etc/kong/{{ kong.nginx_template }}"
+PIDFILE=/usr/local/kong/pids/nginx.pid
 
 case "$1" in
 	start)
@@ -13,7 +13,7 @@ case "$1" in
 		if [ -f $PIDFILE ]; then
 			echo "Process is running already"
 		else
-			$DAEMON start $DAEMON_ARGS
+			$DAEMON start "$DAEMON_ARGS"
 			printf "%s\n" "Ok"
 		fi
 	;;
@@ -30,7 +30,7 @@ case "$1" in
 	stop)
 		printf "%-50s" "Stopping $NAME..."
 		if [ -f $PIDFILE ]; then
-			$DAEMON stop 
+			$DAEMON stop
 			printf "%s\n" "Ok"
 			rm -f $PIDFILE
 		else
@@ -41,7 +41,7 @@ case "$1" in
 	restart)
 		printf "%-50s" "Restarting $NAME..."
 		if [ -f $PIDFILE ]; then
-			$DAEMON restart 
+			$DAEMON restart
 			printf "%s\n" "Ok"
 		else
 			printf "%s\n" "Process is not running, starting..."

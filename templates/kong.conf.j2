@@ -1,0 +1,28 @@
+##
+# {{ ansible_managed }}
+#
+
+{#
+	General
+#}
+
+{#
+	Nginx
+#}
+proxy_listen = {{ kong.proxy_listen }}
+proxy_listen_ssl = {{ kong.proxy_listen_ssl }}
+admin_listen = {{ kong.admin_api_listen }}
+
+{#
+	Datastore
+	Supports only Postgresql for now
+#}
+database = postgres
+
+pg_host = {{ kong.db.host }}
+pg_port = {{ kong.db.port }}
+pg_user = {{ kong.db.user }}
+pg_password = {{ kong.db.password }}
+pg_database = {{ kong.db.name }}
+pg_ssl = off
+pg_ssl_verify = off
