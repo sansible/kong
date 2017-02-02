@@ -28,6 +28,15 @@
     dest: /etc/init.d/kong
     mode: 0751
     src: initd.j2
+  when: ansible_service_mgr == 'upstart'
+
+- name: Create kong systemd script
+  become: yes
+  template:
+    dest: /etc/systemd/system/kong.service
+    mode: 0755
+    src: systemd.j2
+  when: ansible_service_mgr == 'systemd'
 
 - name: Ensure kong service is enabled
   become: yes
