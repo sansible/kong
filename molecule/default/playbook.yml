@@ -1,0 +1,24 @@
+---
+
+- name: Converge
+  hosts: all
+
+  pre_tasks:
+    - name: Install apt-transport-https, net-tools
+      become: yes
+      apt:
+        name: "{{ item }}"
+        update_cache: yes
+        cache_valid_time: 3600
+      with_items:
+        - apt-transport-https
+        - net-tools
+
+  roles:
+    - role: sansible.postgresql
+      sansible_postgresql_root_password: swordfish
+      sansible_postgresql_root_user: root
+
+    - role: kong
+      sansible_kong_db_root_password: swordfish
+      sansible_kong_db_root_user: root

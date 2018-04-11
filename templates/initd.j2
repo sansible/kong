@@ -1,10 +1,18 @@
-#!/bin/bash
+### BEGIN INIT INFO
+# Provides:          kong
+# Required-Start:    {{ sansible_kong_startup_requires }}
+# Required-Stop:     {{ sansible_kong_startup_requires }}
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: start kong
+### END INIT INFO
+
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin
 DESC="Kong API Service"
 NAME=kong
 DAEMON=/usr/local/bin/kong
-DAEMON_ARGS="--nginx-conf=/etc/kong/{{ kong.nginx_template }}"
+DAEMON_ARGS="--nginx-conf=/etc/kong/{{ sansible_kong_nginx_template }}"
 PIDFILE=/usr/local/kong/pids/nginx.pid
 
 case "$1" in

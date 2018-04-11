@@ -1,18 +1,25 @@
 ---
 
+- name: Install Kong Dependencies
+  become: yes
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    cache_valid_time: 3600
+  with_items: "{{ sansible_kong_dependencies }}"
+
 - name: Add BinTray deb repository
   become: yes
   apt_repository:
-    repo: "deb https://dl.bintray.com/mashape/kong-ubuntu-{{ ansible_distribution_release }}-{{ kong.version | regex_replace('(^[0-9]+\\.[0-9]+).*$', '\\1.x') }}
+    repo: "deb https://dl.bintray.com/mashape/kong-ubuntu-{{ ansible_distribution_release }}-{{ sansible_kong_version | regex_replace('(^[0-9]+\\.[0-9]+).*$', '\\1.x') }}
       {{ ansible_distribution_release }} main"
     state: present
 
-  # We need to force the install due to lack of GPG signature.
-- name: "Install Kong {{ kong.version }}"
+- name: "Install Kong {{ sansible_kong_version }}"
   become: yes
   apt:
-    name: "kong={{ kong.version }}"
-    force: yes
+    name: "kong={{ sansible_kong_version }}"
+    force: yes  # https://github.com/Kong/kong/issues/1728
 
 - name: Ensure log directory owned by nginx user
   become: yes
@@ -26,21 +33,11 @@
   become: yes
   template:
     dest: /etc/init.d/kong
-    mode: 0751
+    mode: 0750
     src: initd.j2
-  when: ansible_service_mgr == 'upstart'
-
-- name: Create kong systemd script
-  become: yes
-  template:
-    dest: /etc/systemd/system/kong.service
-    mode: 0755
-    src: systemd.j2
-  when: ansible_service_mgr == 'systemd'
 
 - name: Ensure kong service is enabled
   become: yes
   service:
     name: kong
     enabled: yes
-    state: stopped
