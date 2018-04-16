@@ -1,0 +1,41 @@
+---
+
+driver:
+  name: docker
+
+platforms:
+  - name: sansible_kong-trusty
+    image: ubuntu:trusty
+  - name: sansible_kong-xenial
+    image: ubuntu:xenial
+
+provisioner:
+  name: ansible
+  lint:
+    name: ansible-lint
+    options:
+      x: ['ANSIBLE0016']
+
+lint:
+  name: yamllint
+  options:
+    config-data:
+      extends: default
+      ignore: .venv_ansible*
+      rules:
+        line-length:
+          max: 200
+        truthy: disable
+
+dependency:
+  name: galaxy
+  options:
+    role-file: requirements.yml
+
+scenario:
+  name: default
+
+verifier:
+  name: testinfra
+  lint:
+    name: flake8

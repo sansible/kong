@@ -9,9 +9,9 @@
 {#
 	Nginx
 #}
-proxy_listen = {{ kong.proxy_listen }}
-proxy_listen_ssl = {{ kong.proxy_listen_ssl }}
-admin_listen = {{ kong.admin_api_listen }}
+proxy_listen = {{ sansible_kong_proxy_listen }}
+proxy_listen_ssl = {{ sansible_kong_proxy_listen_ssl }}
+admin_listen = {{ sansible_kong_admin_api_listen }}
 
 {#
 	Datastore
@@ -19,10 +19,10 @@ admin_listen = {{ kong.admin_api_listen }}
 #}
 database = postgres
 
-pg_host = {{ kong.db.host }}
-pg_port = {{ kong.db.port }}
-pg_user = {{ kong.db.user }}
-pg_password = {{ kong.db.password }}
-pg_database = {{ kong.db.name }}
+pg_host = {{ sansible_kong_db_host }}
+pg_port = {{ sansible_kong_db_port }}
+pg_user = {{ sansible_kong_db_user }}
+pg_password = {{ sansible_kong_db_password }}
+pg_database = {{ sansible_kong_db_name }}
 pg_ssl = off
 pg_ssl_verify = off
